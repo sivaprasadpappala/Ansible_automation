@@ -1,0 +1,9 @@
+---
+- name: Create namespace
+  include_tasks: namespace.yml
+
+- name: Prepare and install helm chart
+  include_tasks: helm.yml
+
+- name: Wait for all monitoring components
+  include_tasks: wait.yml

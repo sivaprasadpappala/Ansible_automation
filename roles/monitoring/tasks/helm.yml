@@ -1,0 +1,26 @@
+---
+- name: Template Helm values file
+  ansible.builtin.template:
+    src: monitoring-values.yaml.j2
+    dest: "{{ values_file }}"
+    mode: '0644'
+
+- name: Add Helm repo
+  ansible.builtin.command: >
+    helm repo add {{ helm_repo_name }} {{ helm_repo_url }} --force-update
+  register: add_repo
+  changed_when: "'already exists' not in (add_repo.stderr | default(''))"
+
+- name: Update Helm repo index
+  ansible.builtin.command: helm repo update
+  changed_when: false
+
+- name: Install/Upgrade kube-prometheus-stack
+  ansible.builtin.command: >
+    helm upgrade --install {{ release_name }} {{ chart_ref }}
+    -n {{ namespace }}
+    --create-namespace
+    -f {{ values_file }}
+    {% if chart_version != "" %} --version {{ chart_version }} {% endif %}
+  register: helm_install
+  changed_when: "'Release' in (helm_install.stdout | default(''))"

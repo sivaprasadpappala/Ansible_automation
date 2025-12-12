@@ -1,0 +1,49 @@
+prometheus:
+  prometheusSpec:
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: {{ prometheus_storage }}
+          {% if storage_class %}
+          storageClassName: "{{ storage_class }}"
+          {% endif %}
+
+grafana:
+  enabled: true
+  adminUser: "{{ grafana_admin_user }}"
+  adminPassword: "{{ grafana_admin_password }}"
+  persistence:
+    enabled: true
+    size: {{ grafana_storage }}
+    {% if storage_class %}
+    storageClassName: "{{ storage_class }}"
+    {% endif %}
+
+alertmanager:
+  alertmanagerSpec:
+    storage:
+      volumeClaimTemplate:
+        spec:
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: {{ alertmanager_storage }}
+          {% if storage_class %}
+          storageClassName: "{{ storage_class }}"
+          {% endif %}
+
+# Disable heavy components for minimal setup
+kubeApiServer:
+  enabled: false
+
+kubeControllerManager:
+  enabled: false
+
+kubeScheduler:
+  enabled: false
+
+kubeEtcd:
+  enabled: false

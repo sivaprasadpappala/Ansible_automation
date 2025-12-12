@@ -1,0 +1,44 @@
+---
+#install kubectl
+- name: Download kubectl binary
+  get_url:
+    url: "https://dl.k8s.io/release/v1.33.0/bin/linux/amd64/kubectl"
+    dest: /usr/local/bin/kubectl
+    mode: '0755'
+
+- name: Download Helm tarball
+  get_url:
+    url: "https://get.helm.sh/helm-v3.15.4-linux-amd64.tar.gz"
+    dest: /tmp/helm.tar.gz
+
+- name: Extract Helm binary
+  unarchive:
+    src: /tmp/helm.tar.gz
+    dest: /tmp/
+    remote_src: yes
+
+- name: Move Helm to /usr/local/bin
+  copy:
+    src: /tmp/linux-amd64/helm
+    dest: /usr/local/bin/helm
+    mode: '0755'
+
+- name: Ensure .kube directory exists
+  file:
+    path: /root/.kube
+    state: directory
+    mode: "0700"
+
+- name: Copy rke2 kubeconfig
+  become: yes
+  copy:
+    src: /etc/rancher/rke2/rke2.yaml
+    dest: /root/.kube/config
+    mode: "0600"
+    remote_src: yes
+
+- name: Replace server IP in kubeconfig
+  replace:
+    path: /root/.kube/config
+    regexp: 'https://127.0.0.1:6443'
+    replace: "https://{{ ansible_default_ipv4.address }}:6443"

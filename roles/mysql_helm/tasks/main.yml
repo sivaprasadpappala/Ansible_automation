@@ -1,0 +1,72 @@
+- name: Create namespace if missing
+  shell: |
+    kubectl get ns {{ mysql_namespace }} >/dev/null 2>&1 || kubectl create ns {{ mysql_namespace }}
+  changed_when: false
+
+# ----------------------------
+# Render Manifest Templates
+# ----------------------------
+
+- name: Render MySQL Deployment
+  template:
+    src: mysql-deploy.yaml.j2
+    dest: "{{ render_dir }}/mysql-deploy.yaml"
+    mode: "0644"
+
+- name: Render MySQL Service
+  template:
+    src: mysql-service.yaml.j2
+    dest: "{{ render_dir }}/mysql-service.yaml"
+    mode: "0644"
+
+- name: Render MySQL Init Job
+  template:
+    src: init-job.yaml.j2
+    dest: "{{ render_dir }}/mysql-init-job.yaml"
+    mode: "0644"
+
+# ----------------------------
+# Apply Kubernetes Manifests
+# ----------------------------
+
+- name: Apply MySQL Deployment
+  shell: |
+    kubectl apply -f {{ render_dir }}/mysql-deploy.yaml -n {{ mysql_namespace }}
+
+- name: Apply MySQL Service
+  shell: |
+    kubectl apply -f {{ render_dir }}/mysql-service.yaml -n {{ mysql_namespace }}
+
+- name: Wait for MySQL Deployment to become ready
+  shell: |
+    kubectl -n {{ mysql_namespace }} wait --for=condition=available deployment/{{ release_name }} --timeout=200s
+  register: wait_output
+  failed_when: wait_output.rc != 0
+
+- name: Apply MySQL Init Job
+  shell: |
+    kubectl apply -f {{ render_dir }}/mysql-init-job.yaml -n {{ mysql_namespace }}
+
+- name: Wait for init Job completion
+  shell: |
+    kubectl -n {{ mysql_namespace }} wait --for=condition=complete job/mysql-init --timeout=200s || true
+
+- name: Fetch Init Job Logs
+  shell: |
+    POD=$(kubectl -n {{ mysql_namespace }} get pods -l job-name=mysql-init -o jsonpath='{.items[0].metadata.name}')
+    kubectl -n {{ mysql_namespace }} logs $POD
+  register: initlogs
+  failed_when: false
+
+- debug:
+    msg: "{{ initlogs.stdout }}"
+
+- name: Render Adminer manifest
+  template:
+    src: adminer-deploy.yaml.j2
+    dest: "{{ render_dir }}/adminer.yaml"
+    mode: "0644"
+
+- name: Apply Adminer manifest
+  shell: |
+    kubectl apply -f {{ render_dir }}/adminer.yaml -n {{ mysql_namespace }}

@@ -1,0 +1,14 @@
+mysql_namespace: mysql
+release_name: simple-mysql
+mysql_root_password: "RootPass123!"
+mysql_database: sampledb
+mysql_user: sampleuser
+mysql_password: samplepass
+sample_table: people
+sample_data:
+  - name: "Alice"
+    email: "alice@example.com"
+  - name: "Bob"
+    email: "bob@example.com"
+render_dir: "{{ lookup('env','HOME') }}"
+storage_size: 2Gi

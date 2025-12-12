@@ -1,0 +1,7 @@
+---
+- name: Wait for monitoring deployments to be Available (timeout 10 minutes)
+  ansible.builtin.command: >
+    kubectl wait --for=condition=Available deployment --all
+    -n {{ namespace }} --timeout=600s
+  register: wait_deploy
+  failed_when: wait_deploy.rc != 0

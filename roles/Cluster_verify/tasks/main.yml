@@ -1,0 +1,8 @@
+---
+- name: Get cluster nodes
+  command: kubectl get nodes
+  register: kubectl_output
+
+- name: Show kubectl output
+  debug:
+    msg: "{{ kubectl_output.stdout }}"

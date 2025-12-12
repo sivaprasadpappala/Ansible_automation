@@ -1,0 +1,28 @@
+---
+- name: Apply namespace
+  command: kubectl apply -f roles/deploy_nginx_app/files/namespace.yaml
+  register: ns_out
+
+- debug:
+    msg: "{{ ns_out.stdout }}"
+
+- name: Apply NGINX deployment
+  command: kubectl apply -f roles/deploy_nginx_app/files/deployment.yaml
+  register: deploy_out
+
+- debug:
+    msg: "{{ deploy_out.stdout }}"
+
+- name: Apply NGINX service
+  command: kubectl apply -f roles/deploy_nginx_app/files/service.yaml
+  register: svc_out
+
+- debug:
+    msg: "{{ svc_out.stdout }}"
+
+- name: Apply ingress
+  command: kubectl apply -f roles/deploy_nginx_app/files/ingress.yaml
+  register: ing_out
+
+- debug:
+    msg: "{{ ing_out.stdout }}"

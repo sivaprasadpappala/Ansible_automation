@@ -1,0 +1,15 @@
+---
+- name: Install kubectl, Helm and verify cluster
+  hosts: localhost
+  become: yes
+  gather_facts: yes
+
+  vars_files:
+    - group_vars/main.yml
+
+  roles:
+    - install_tools
+    - Cluster_verify
+    - deploy_nginx_app 
+    - mysql_helm
+    - monitoring
