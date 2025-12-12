@@ -20,11 +20,11 @@ spec:
           args:
             - >
               echo "Waiting for MySQL...";
-              until mysql -h {{ release_name }} -uroot -p"$MYSQL_ROOT_PASSWORD" -e "SELECT 1" >/dev/null 2>&1;
+              until mysql -h {{ mysql_release_name }} -uroot -p"$MYSQL_ROOT_PASSWORD" -e "SELECT 1" >/dev/null 2>&1;
               do sleep 3; done;
 
               echo "Creating DB and table...";
-              mysql -h {{ release_name }} -uroot -p"$MYSQL_ROOT_PASSWORD" -e "
+              mysql -h {{ mysql_release_name }} -uroot -p"$MYSQL_ROOT_PASSWORD" -e "
                 CREATE DATABASE IF NOT EXISTS {{ mysql_database }};
                 USE {{ mysql_database }};
                 CREATE TABLE IF NOT EXISTS {{ sample_table }} (
@@ -36,7 +36,7 @@ spec:
 
               echo "Inserting sample data...";
 {% for row in sample_data %}
-              mysql -h {{ release_name }} -uroot -p"$MYSQL_ROOT_PASSWORD" -e "
+              mysql -h {{ mysql_release_name }} -uroot -p"$MYSQL_ROOT_PASSWORD" -e "
                 INSERT INTO {{ mysql_database }}.{{ sample_table }}
                 (name, email)
                 VALUES ('{{ row.name }}', '{{ row.email }}');

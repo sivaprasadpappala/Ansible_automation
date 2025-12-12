@@ -1,17 +1,17 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ release_name }}
+  name: {{ mysql_release_name }}
   namespace: {{ mysql_namespace }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: {{ release_name }}
+      app: {{ mysql_release_name }}
   template:
     metadata:
       labels:
-        app: {{ release_name }}
+        app: {{ mysql_release_name }}
     spec:
       containers:
         - name: mysql
@@ -33,12 +33,12 @@ spec:
       volumes:
         - name: mysql-pv
           persistentVolumeClaim:
-            claimName: {{ release_name }}-pvc
+            claimName: {{ mysql_release_name }}-pvc
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ release_name }}-pvc
+  name: {{ mysql_release_name }}-pvc
   namespace: {{ mysql_namespace }}
 spec:
   accessModes:

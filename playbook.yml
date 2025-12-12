@@ -1,5 +1,5 @@
 ---
-- name: Install kubectl, Helm and verify cluster
+- name: Ansible Automation Playbook
   hosts: localhost
   become: yes
   gather_facts: yes

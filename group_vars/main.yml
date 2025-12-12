@@ -1,5 +1,5 @@
 mysql_namespace: mysql
-release_name: simple-mysql
+mysql_release_name: simple-mysql
 mysql_root_password: "RootPass123!"
 mysql_database: sampledb
 mysql_user: sampleuser
@@ -12,3 +12,22 @@ sample_data:
     email: "bob@example.com"
 render_dir: "{{ lookup('env','HOME') }}"
 storage_size: 2Gi
+
+monitoring_namespace: monitoring
+
+helm_repo_name: prometheus-community
+helm_repo_url: https://prometheus-community.github.io/helm-charts
+
+monitoring_release_name: kube-prometheus-stack
+chart_ref: prometheus-community/kube-prometheus-stack
+chart_version: ""        # latest if blank
+
+storage_class: ""        # default SC
+prometheus_storage: "10Gi"
+grafana_storage: "5Gi"
+alertmanager_storage: "2Gi"
+
+grafana_admin_user: "admin"
+grafana_admin_password: "ChangeMe123!"
+
+values_file: /tmp/monitoring-values.yaml

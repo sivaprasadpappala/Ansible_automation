@@ -17,8 +17,8 @@
 
 - name: Install/Upgrade kube-prometheus-stack
   ansible.builtin.command: >
-    helm upgrade --install {{ release_name }} {{ chart_ref }}
-    -n {{ namespace }}
+    helm upgrade --install {{ monitoring_release_name }} {{ chart_ref }}
+    -n {{ monitoring_namespace }}
     --create-namespace
     -f {{ values_file }}
     {% if chart_version != "" %} --version {{ chart_version }} {% endif %}

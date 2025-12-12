@@ -1,11 +1,11 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ release_name }}
+  name: {{ mysql_release_name }}
   namespace: {{ mysql_namespace }}
 spec:
   selector:
-    app: {{ release_name }}
+    app: {{ mysql_release_name }}
   ports:
     - port: 3306
       targetPort: 3306

@@ -39,7 +39,7 @@
 
 - name: Wait for MySQL Deployment to become ready
   shell: |
-    kubectl -n {{ mysql_namespace }} wait --for=condition=available deployment/{{ release_name }} --timeout=200s
+    kubectl -n {{ mysql_namespace }} wait --for=condition=available deployment/{{ mysql_release_name }} --timeout=200s
   register: wait_output
   failed_when: wait_output.rc != 0
 
