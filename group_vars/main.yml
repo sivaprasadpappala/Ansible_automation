@@ -30,4 +30,9 @@ alertmanager_storage: "2Gi"
 grafana_admin_user: "admin"
 grafana_admin_password: "ChangeMe123!"
 
+grafana_ingress_host: grafana.monitoring.local
+prometheus_ingress_host: prometheus.monitoring.local
+
+ingress_class_name: nginx
+
 values_file: /tmp/monitoring-values.yaml

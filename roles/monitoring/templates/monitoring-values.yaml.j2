@@ -1,4 +1,14 @@
 prometheus:
+  ingress:
+    enabled: true
+    ingressClassName: "{{ ingress_class_name }}"
+    annotations:
+      nginx.ingress.kubernetes.io/rewrite-target: /
+    hosts:
+      - "{{ prometheus_ingress_host }}"
+    paths:
+      - /
+      
   prometheusSpec:
     storageSpec:
       volumeClaimTemplate:
@@ -21,6 +31,16 @@ grafana:
     {% if storage_class %}
     storageClassName: "{{ storage_class }}"
     {% endif %}
+  
+  ingress:
+    enabled: true
+    ingressClassName: "{{ ingress_class_name }}"
+    annotations:
+      nginx.ingress.kubernetes.io/rewrite-target: /
+    hosts:
+      - "{{ grafana_ingress_host }}"
+    path: /
+
 
 alertmanager:
   alertmanagerSpec:
