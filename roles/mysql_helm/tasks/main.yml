@@ -25,6 +25,12 @@
     dest: "{{ render_dir }}/mysql-init-job.yaml"
     mode: "0644"
 
+- name: Render Adminer manifest
+  template:
+    src: adminer-deploy.yaml.j2
+    dest: "{{ render_dir }}/adminer.yaml"
+    mode: "0644"
+
 # ----------------------------
 # Apply Kubernetes Manifests
 # ----------------------------
@@ -60,12 +66,6 @@
 
 - debug:
     msg: "{{ initlogs.stdout }}"
-
-- name: Render Adminer manifest
-  template:
-    src: adminer-deploy.yaml.j2
-    dest: "{{ render_dir }}/adminer.yaml"
-    mode: "0644"
 
 - name: Apply Adminer manifest
   shell: |
